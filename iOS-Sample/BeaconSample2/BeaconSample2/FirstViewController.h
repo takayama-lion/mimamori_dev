@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "MimamoriBeacon.h"
-#import "Preference.h"
 
 @interface FirstViewController : UIViewController<BeaconDelegate>
 

@@ -32,10 +32,14 @@
 
 @property (nonatomic, assign) id<BeaconDelegate> delegate;
 
+@property (strong, nonatomic) NSString *Identifier;
 @property (strong, nonatomic) CLLocationManager *LocationManager;
 @property (strong, nonatomic) CLBeaconRegion *Region;
 
-- (id)init;
+/**
+ * init
+ */
+- (id)initIdentifier:(NSString *)identifier;
 /**
  * set uuid, major
  */

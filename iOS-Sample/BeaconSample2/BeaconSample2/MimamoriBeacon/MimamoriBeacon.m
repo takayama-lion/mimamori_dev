@@ -8,24 +8,17 @@
 
 #import "MimamoriBeacon.h"
 
+NSString *const RUNNING_STATE = @"running";
+
 @implementation MimamoriBeacon
 
-- (id)init
+/**
+ * init
+ */
+- (id)initIdentifier:(NSString *)identifier;
 {
     if (self = [super init]) {
-        // 緯度
-        _latitude = -1;
-        // 経度
-        _longitude = -1;
-        if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) {
-            self.LocationManager = [[CLLocationManager alloc] init];
-            self.LocationManager.delegate = self;
-            if ([self.LocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
-                // requestAlwaysAuthorizationメソッドが利用できる場合(iOS8以上の場合)
-                // 位置情報の取得許可を求めるメソッド
-                //[self.LocationManager requestAlwaysAuthorization];
-            }
-        }
+        self.Identifier = identifier;
     }
     return self;
 }
@@ -34,12 +27,17 @@
  */
 - (void)setUUID:(NSString *)uuid major:(NSString *)major
 {
-    self.Region = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:uuid]
-                                                          major:(uint16_t)[major integerValue]
-                                                     identifier:[[NSUUID UUID] UUIDString]];
-    self.Region.notifyOnEntry = YES;
-    self.Region.notifyOnExit = YES;
-    self.Region.notifyEntryStateOnDisplay = NO;
+    if ([major length]) {
+        self.Region = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:uuid]
+                                                              major:(uint16_t)[major integerValue]
+                                                         identifier:self.Identifier];
+        self.Region.notifyOnEntry = YES;
+        self.Region.notifyOnExit = YES;
+        self.Region.notifyEntryStateOnDisplay = NO;
+        
+    } else {
+        [self setUUID:uuid];
+    }
 }
 /**
  * set uuid
@@ -47,7 +45,7 @@
 - (void)setUUID:(NSString *)uuid
 {
     self.Region = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:uuid]
-                                                     identifier:[[NSUUID UUID] UUIDString]];
+                                                     identifier:self.Identifier];
     self.Region.notifyOnEntry = YES;
     self.Region.notifyOnExit = YES;
     self.Region.notifyEntryStateOnDisplay = NO;
@@ -58,14 +56,26 @@
 - (void)on
 {
     NSLog(@"Beacon ON");
-    if ([self.LocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
-        // requestAlwaysAuthorizationメソッドが利用できる場合(iOS8以上の場合)
-        // 位置情報の取得許可を求めるメソッド
-        [self.LocationManager requestAlwaysAuthorization];
-    } else {
-        // requestAlwaysAuthorizationメソッドが利用できない場合(iOS8未満の場合)
-        NSLog(@"Beacon ON start monitoring");
-        [self.LocationManager startMonitoringForRegion: self.Region];
+    if ([self isRunning]) {
+        [self off];
+    }
+    // 緯度
+    _latitude = -1;
+    // 経度
+    _longitude = -1;
+    if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) {
+        self.LocationManager = [[CLLocationManager alloc] init];
+        self.LocationManager.delegate = self;
+        if ([self.LocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+            // requestAlwaysAuthorizationメソッドが利用できる場合(iOS8以上の場合)
+            // 位置情報の取得許可を求めるメソッド
+            [self.LocationManager requestAlwaysAuthorization];
+        } else {
+            // requestAlwaysAuthorizationメソッドが利用できない場合(iOS8未満の場合)
+            NSLog(@"Beacon ON start monitoring");
+            [self.LocationManager startMonitoringForRegion: self.Region];
+            [self stateON];
+        }
     }
 }
 /**
@@ -75,6 +85,8 @@
 {
     NSLog(@"Beacon OFF");
     [self.LocationManager stopMonitoringForRegion:self.Region];
+    self.LocationManager.delegate = nil;
+    [self stateOFF];
 }
 // ユーザの位置情報の許可状態を確認するメソッド
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
@@ -85,10 +97,12 @@
         // ユーザが位置情報の使用を常に許可している場合
         NSLog(@"start monitoring 1");
         [self.LocationManager startMonitoringForRegion: self.Region];
+        [self stateON];
     } else if(status == kCLAuthorizationStatusAuthorizedWhenInUse) {
         // ユーザが位置情報の使用を使用中のみ許可している場合
         NSLog(@"start monitoring 2");
         [self.LocationManager startMonitoringForRegion: self.Region];
+        [self stateON];
     }
 }
 
@@ -132,6 +146,10 @@
             if([region isMemberOfClass:[CLBeaconRegion class]] && [CLLocationManager isRangingAvailable]){
                 NSLog(@"Enter %@",region.identifier);
                 NSLog(@"Already Entering");
+                // 位置情報取得
+                [self.LocationManager startUpdatingLocation];
+                // レンジング(Beacon の情報取得)
+                [self.LocationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
             }
             break;
             
@@ -171,6 +189,33 @@
     _longitude = newLocation.coordinate.longitude;
     NSLog(@"%f", _latitude);
     NSLog(@"%f", _longitude);
-    
+    // 位置情報取得 終了
+    [self.LocationManager stopUpdatingLocation];
+}
+/**
+ * beacon running state on
+ */
+- (void)stateON
+{
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    [pref setBool:YES forKey:RUNNING_STATE];
+    [pref synchronize];
+}
+/**
+ * beacon running state off
+ */
+- (void)stateOFF
+{
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    [pref removeObjectForKey:RUNNING_STATE];
+    [pref synchronize];
+}
+/**
+ * is beacon running state
+ */
+- (BOOL)isRunning
+{
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    return [pref boolForKey:RUNNING_STATE];
 }
 @end

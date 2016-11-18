@@ -7,6 +7,7 @@
 //
 
 #import "FirstViewController.h"
+#import "LocalNotification.h"
 
 @interface FirstViewController ()
 
@@ -17,16 +18,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.Beacon = [[MimamoriBeacon alloc] init];
+    self.Beacon = [[MimamoriBeacon alloc] initIdentifier:@"BeaconSample2"];
     self.Beacon.delegate = self;
-//    [self.Beacon setUUID:@"53544152-4a50-4e40-8154-2631935eb10b" major:@"1"];
-    Preference *pref = [[Preference alloc] init];
-    NSString *uuid = [pref getStringForKey:@"UUID"];
-    NSString *major = [pref getStringForKey:@"Major"];
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    NSString *uuid = [pref stringForKey:@"UUID"];
+    NSString *major = [pref stringForKey:@"Major"];
     if ([uuid length]) {
-        [self.UUIDField setText:[pref getStringForKey:@"UUID"]];
+        [self.UUIDField setText:uuid];
         if ([major length]) {
-            [self.MajorField setText:[pref getStringForKey:@"Major"]];
+            [self.MajorField setText:major];
         }
     } else {
         [self.UUIDField setText:@"53544152-4a50-4e40-8154-2631935eb10b"];
@@ -55,15 +55,15 @@
     if (uuid != nil) {
         if (major != nil) {
             [self.Beacon setUUID:uuid major:major];
-            Preference *pref = [[Preference alloc] init];
-            [pref setString:uuid forKey:@"UUID"];
-            [pref setString:major forKey:@"Major"];
+            NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+            [pref setValue:uuid forKey:@"UUID"];
+            [pref setValue:major forKey:@"Major"];
             [pref synchronize];
         } else {
             [self.Beacon setUUID:uuid];
-            Preference *pref = [[Preference alloc] init];
-            [pref setString:uuid forKey:@"UUID"];
-            [pref removeForkey:@"Major"];
+            NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+            [pref setValue:uuid forKey:@"UUID"];
+            [pref removeObjectForKey:@"Major"];
             [pref synchronize];
         }
     }
@@ -76,6 +76,10 @@
 - (IBAction)setBtnBeaconOff:(id)sender
 {
     NSLog(@"beacon OFF");
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    NSString *uuid = [pref stringForKey:@"UUID"];
+    NSString *major = [pref stringForKey:@"Major"];
+    [self.Beacon setUUID:uuid major:major];
     [self.Beacon off];
     [self.BeaconOnBtn setAlpha:1.0f];
     [self.BeaconOffBtn setAlpha:0.5f];
@@ -93,6 +97,7 @@
 - (void)searchBeaconInfo:(BeaconInfo *)beaconInfo
 {
     NSString *log = [NSString stringWithFormat:@"UUID=%@\n Major=%@\n Minor=%@\n Latitude=%f\n Longitude=%f", beaconInfo.UUID, beaconInfo.Major, beaconInfo.Minor, *beaconInfo.Latitude, *beaconInfo.Longitude];
+    [LocalNotification sendLocalMessage:log];
     [self.LogLabel setText:log];
 }
 @end

@@ -18,8 +18,8 @@
 		2E7AF8351DDD7E79003167FD /* BeaconSample2UITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AF8341DDD7E79003167FD /* BeaconSample2UITests.m */; };
 		2E7AF8441DDD8B7B003167FD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E7AF8431DDD8B7B003167FD /* CoreLocation.framework */; };
 		2E7DE80A1DDEA7C60090917E /* MimamoriBeacon.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7DE8091DDEA7C60090917E /* MimamoriBeacon.m */; };
+		2E7DE8521DDED4EF0090917E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7DE8511DDED4EF0090917E /* LocalNotification.m */; };
 		2ED26BCA1DDDC79600569365 /* BeaconInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED26BC91DDDC79600569365 /* BeaconInfo.m */; };
-		2EE1766F1DDDBE1E00C8C14A /* Preference.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1766E1DDDBE1E00C8C14A /* Preference.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,10 +61,10 @@
 		2E7AF8431DDD8B7B003167FD /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		2E7DE8081DDEA7C60090917E /* MimamoriBeacon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MimamoriBeacon.h; sourceTree = "<group>"; };
 		2E7DE8091DDEA7C60090917E /* MimamoriBeacon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MimamoriBeacon.m; sourceTree = "<group>"; };
+		2E7DE8501DDED4EF0090917E /* LocalNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalNotification.h; sourceTree = "<group>"; };
+		2E7DE8511DDED4EF0090917E /* LocalNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
 		2ED26BC81DDDC79600569365 /* BeaconInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconInfo.h; sourceTree = "<group>"; };
 		2ED26BC91DDDC79600569365 /* BeaconInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconInfo.m; sourceTree = "<group>"; };
-		2EE1766D1DDDBE1E00C8C14A /* Preference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Preference.h; sourceTree = "<group>"; };
-		2EE1766E1DDDBE1E00C8C14A /* Preference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Preference.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,8 +182,8 @@
 		2EE1766C1DDDBD7A00C8C14A /* libs */ = {
 			isa = PBXGroup;
 			children = (
-				2EE1766D1DDDBE1E00C8C14A /* Preference.h */,
-				2EE1766E1DDDBE1E00C8C14A /* Preference.m */,
+				2E7DE8501DDED4EF0090917E /* LocalNotification.h */,
+				2E7DE8511DDED4EF0090917E /* LocalNotification.m */,
 			);
 			path = libs;
 			sourceTree = "<group>";
@@ -327,8 +327,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E7DE8521DDED4EF0090917E /* LocalNotification.m in Sources */,
 				2ED26BCA1DDDC79600569365 /* BeaconInfo.m in Sources */,
-				2EE1766F1DDDBE1E00C8C14A /* Preference.m in Sources */,
 				2E7DE80A1DDEA7C60090917E /* MimamoriBeacon.m in Sources */,
 				2E7AF8171DDD7E79003167FD /* SecondViewController.m in Sources */,
 				2E7AF8111DDD7E79003167FD /* AppDelegate.m in Sources */,
