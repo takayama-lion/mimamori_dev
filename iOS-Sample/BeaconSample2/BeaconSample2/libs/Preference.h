@@ -28,7 +28,10 @@
  * get string value
  */
 - (NSString *)getStringForKey:(NSString *)key;
-
+/**
+ * remove key
+ */
+- (void)removeForkey:(NSString *)key;
 //***** static
 /**
  * set string value
@@ -38,5 +41,8 @@
  * get string value
  */
 + (NSString *)getStringForKey:(NSString *)key;
-
+/**
+ * remove key
+ */
++ (void)removeForkey:(NSString *)key;
 @end

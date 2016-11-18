@@ -22,9 +22,12 @@
 //    [self.Beacon setUUID:@"53544152-4a50-4e40-8154-2631935eb10b" major:@"1"];
     Preference *pref = [[Preference alloc] init];
     NSString *uuid = [pref getStringForKey:@"UUID"];
-    if (uuid != nil) {
+    NSString *major = [pref getStringForKey:@"Major"];
+    if ([uuid length]) {
         [self.UUIDField setText:[pref getStringForKey:@"UUID"]];
-        [self.MajorField setText:[pref getStringForKey:@"Major"]];
+        if ([major length]) {
+            [self.MajorField setText:[pref getStringForKey:@"Major"]];
+        }
     } else {
         [self.UUIDField setText:@"53544152-4a50-4e40-8154-2631935eb10b"];
     }
@@ -41,21 +44,33 @@
 - (IBAction)setBtnBeaconOn:(id)sender
 {
     NSLog(@"beacon ON");
-    if (self.UUIDField.text != nil) {
-        if (self.MajorField != nil) {
-            [self.Beacon setUUID:self.UUIDField.text major:self.MajorField.text];
+    NSString *uuid = nil;
+    NSString *major = nil;
+    if (self.UUIDField != nil && [self.UUIDField.text length]) {
+        uuid = self.UUIDField.text;
+    }
+    if (self.MajorField != nil && [self.MajorField.text length]) {
+        major = self.MajorField.text;
+    }
+    if (uuid != nil) {
+        if (major != nil) {
+            [self.Beacon setUUID:uuid major:major];
             Preference *pref = [[Preference alloc] init];
-            [pref setString:self.UUIDField.text forKey:@"UUID"];
-            [pref setString:self.MajorField.text forKey:@"Major"];
+            [pref setString:uuid forKey:@"UUID"];
+            [pref setString:major forKey:@"Major"];
             [pref synchronize];
         } else {
-            [self.Beacon setUUID:self.UUIDField.text];
-            [Preference setString:self.UUIDField.text forKey:@"UUID"];
+            [self.Beacon setUUID:uuid];
+            Preference *pref = [[Preference alloc] init];
+            [pref setString:uuid forKey:@"UUID"];
+            [pref removeForkey:@"Major"];
+            [pref synchronize];
         }
     }
     [self.Beacon on];
     [self.BeaconOnBtn setAlpha:0.5f];
     [self.BeaconOffBtn setAlpha:1.0f];
+    [self.view endEditing:YES];
 
 }
 - (IBAction)setBtnBeaconOff:(id)sender

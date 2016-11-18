@@ -23,7 +23,7 @@
             if ([self.LocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
                 // requestAlwaysAuthorizationメソッドが利用できる場合(iOS8以上の場合)
                 // 位置情報の取得許可を求めるメソッド
-                [self.LocationManager requestAlwaysAuthorization];
+                //[self.LocationManager requestAlwaysAuthorization];
             }
         }
     }
@@ -37,6 +37,9 @@
     self.Region = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:uuid]
                                                           major:(uint16_t)[major integerValue]
                                                      identifier:[[NSUUID UUID] UUIDString]];
+    self.Region.notifyOnEntry = YES;
+    self.Region.notifyOnExit = YES;
+    self.Region.notifyEntryStateOnDisplay = NO;
 }
 /**
  * set uuid
@@ -45,6 +48,9 @@
 {
     self.Region = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:uuid]
                                                      identifier:[[NSUUID UUID] UUIDString]];
+    self.Region.notifyOnEntry = YES;
+    self.Region.notifyOnExit = YES;
+    self.Region.notifyEntryStateOnDisplay = NO;
 }
 /**
  * beacon on

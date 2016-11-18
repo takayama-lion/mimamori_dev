@@ -17,7 +17,7 @@
 		2E7AF82A1DDD7E79003167FD /* BeaconSample2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AF8291DDD7E79003167FD /* BeaconSample2Tests.m */; };
 		2E7AF8351DDD7E79003167FD /* BeaconSample2UITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AF8341DDD7E79003167FD /* BeaconSample2UITests.m */; };
 		2E7AF8441DDD8B7B003167FD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E7AF8431DDD8B7B003167FD /* CoreLocation.framework */; };
-		2E7AF8511DDDA28A003167FD /* MimamoriBeacon.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7AF8501DDDA28A003167FD /* MimamoriBeacon.m */; };
+		2E7DE80A1DDEA7C60090917E /* MimamoriBeacon.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7DE8091DDEA7C60090917E /* MimamoriBeacon.m */; };
 		2ED26BCA1DDDC79600569365 /* BeaconInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED26BC91DDDC79600569365 /* BeaconInfo.m */; };
 		2EE1766F1DDDBE1E00C8C14A /* Preference.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1766E1DDDBE1E00C8C14A /* Preference.m */; };
 /* End PBXBuildFile section */
@@ -59,8 +59,8 @@
 		2E7AF8341DDD7E79003167FD /* BeaconSample2UITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeaconSample2UITests.m; sourceTree = "<group>"; };
 		2E7AF8361DDD7E79003167FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E7AF8431DDD8B7B003167FD /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		2E7AF84F1DDDA28A003167FD /* MimamoriBeacon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MimamoriBeacon.h; sourceTree = "<group>"; };
-		2E7AF8501DDDA28A003167FD /* MimamoriBeacon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MimamoriBeacon.m; sourceTree = "<group>"; };
+		2E7DE8081DDEA7C60090917E /* MimamoriBeacon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MimamoriBeacon.h; sourceTree = "<group>"; };
+		2E7DE8091DDEA7C60090917E /* MimamoriBeacon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MimamoriBeacon.m; sourceTree = "<group>"; };
 		2ED26BC81DDDC79600569365 /* BeaconInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconInfo.h; sourceTree = "<group>"; };
 		2ED26BC91DDDC79600569365 /* BeaconInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconInfo.m; sourceTree = "<group>"; };
 		2EE1766D1DDDBE1E00C8C14A /* Preference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Preference.h; sourceTree = "<group>"; };
@@ -171,8 +171,8 @@
 		2E7AF8481DDD8CB2003167FD /* MimamoriBeacon */ = {
 			isa = PBXGroup;
 			children = (
-				2E7AF84F1DDDA28A003167FD /* MimamoriBeacon.h */,
-				2E7AF8501DDDA28A003167FD /* MimamoriBeacon.m */,
+				2E7DE8081DDEA7C60090917E /* MimamoriBeacon.h */,
+				2E7DE8091DDEA7C60090917E /* MimamoriBeacon.m */,
 				2ED26BC81DDDC79600569365 /* BeaconInfo.h */,
 				2ED26BC91DDDC79600569365 /* BeaconInfo.m */,
 			);
@@ -329,7 +329,7 @@
 			files = (
 				2ED26BCA1DDDC79600569365 /* BeaconInfo.m in Sources */,
 				2EE1766F1DDDBE1E00C8C14A /* Preference.m in Sources */,
-				2E7AF8511DDDA28A003167FD /* MimamoriBeacon.m in Sources */,
+				2E7DE80A1DDEA7C60090917E /* MimamoriBeacon.m in Sources */,
 				2E7AF8171DDD7E79003167FD /* SecondViewController.m in Sources */,
 				2E7AF8111DDD7E79003167FD /* AppDelegate.m in Sources */,
 				2E7AF8141DDD7E79003167FD /* FirstViewController.m in Sources */,

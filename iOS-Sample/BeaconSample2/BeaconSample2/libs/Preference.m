@@ -35,6 +35,13 @@
     [_pref setObject:value forKey:key];
 }
 /**
+ * remove key
+ */
+- (void)removeForkey:(NSString *)key
+{
+    [_pref removeObjectForKey:key];
+}
+/**
  * get string value
  */
 - (NSString *)getStringForKey:(NSString *)key
@@ -58,6 +65,15 @@
 {
     NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
     return [pref stringForKey:key];
+}
+/**
+ * remove key
+ */
++ (void)removeForkey:(NSString *)key
+{
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    [pref removeObjectForKey:key];
+    [pref synchronize];
 }
 
 @end
