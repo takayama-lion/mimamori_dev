@@ -44,6 +44,7 @@
 - (IBAction)setBtnBeaconOn:(id)sender
 {
     NSLog(@"beacon ON");
+    _isSendMsg = NO;
     NSString *uuid = nil;
     NSString *major = nil;
     if (self.UUIDField != nil && [self.UUIDField.text length]) {
@@ -97,7 +98,19 @@
 - (void)searchBeaconInfo:(BeaconInfo *)beaconInfo
 {
     NSString *log = [NSString stringWithFormat:@"UUID=%@\n Major=%@\n Minor=%@\n Latitude=%f\n Longitude=%f", beaconInfo.UUID, beaconInfo.Major, beaconInfo.Minor, *beaconInfo.Latitude, *beaconInfo.Longitude];
-    [LocalNotification sendLocalMessage:log];
+    if (!_isSendMsg) {
+        _isSendMsg = YES;
+        [LocalNotification sendLocalMessage:log];
+        [NSTimer scheduledTimerWithTimeInterval:5
+                                         target:self selector:@selector(limitOff:)
+                                       userInfo:nil
+                                        repeats:NO];
+    }
     [self.LogLabel setText:log];
+}
+- (void)limitOff:(NSTimer *)timer
+{
+    NSLog(@"limit off");
+    _isSendMsg = NO;
 }
 @end

@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "MimamoriBeacon.h"
 
-@interface FirstViewController : UIViewController<BeaconDelegate>
+@interface FirstViewController : UIViewController<BeaconDelegate> {
+    BOOL _isSendMsg;
+}
 
 @property (strong, nonatomic) MimamoriBeacon *Beacon;
 @property (strong, nonatomic) IBOutlet UITextField *UUIDField;
