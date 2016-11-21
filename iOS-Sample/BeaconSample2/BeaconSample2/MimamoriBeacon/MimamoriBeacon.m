@@ -84,6 +84,11 @@ NSString *const RUNNING_STATE = @"running";
 - (void)off
 {
     NSLog(@"Beacon OFF");
+    for (CLBeaconRegion *region in [self.LocationManager monitoredRegions]) {
+        NSLog(@"--region=%@", region);
+    }
+//    NSLog(@"regions:[%@]", regions);
+    
     [self.LocationManager stopMonitoringForRegion:self.Region];
     self.LocationManager.delegate = nil;
     [self stateOFF];

@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "MimamoriBeacon.h"
+#import <CoreBluetooth/CoreBluetooth.h>
+#import <CoreLocation/CoreLocation.h>
 
-@interface FirstViewController : UIViewController<BeaconDelegate> {
+@interface FirstViewController : UIViewController<BeaconDelegate, CBPeripheralManagerDelegate,UIAlertViewDelegate,UIActionSheetDelegate> {
     BOOL _isSendMsg;
 }
 
@@ -20,6 +22,8 @@
 @property (strong, nonatomic) IBOutlet UIButton *BeaconOffBtn;
 @property (strong, nonatomic) IBOutlet UILabel *LogLabel;
 @property (strong, nonatomic) IBOutlet UIButton *LogResetBtn;
+
+@property (strong, nonatomic) CBPeripheralManager *PeripheralManager;
 
 - (IBAction)setBtnBeaconOn:(id)sender;
 - (IBAction)setBtnBeaconOff:(id)sender;

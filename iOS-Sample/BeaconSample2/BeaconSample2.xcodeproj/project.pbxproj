@@ -19,6 +19,7 @@
 		2E7AF8441DDD8B7B003167FD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E7AF8431DDD8B7B003167FD /* CoreLocation.framework */; };
 		2E7DE80A1DDEA7C60090917E /* MimamoriBeacon.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7DE8091DDEA7C60090917E /* MimamoriBeacon.m */; };
 		2E7DE8521DDED4EF0090917E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7DE8511DDED4EF0090917E /* LocalNotification.m */; };
+		2EB7C70B1DE2C2FE00998EEB /* Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB7C70A1DE2C2FE00998EEB /* Alert.m */; };
 		2ED26BCA1DDDC79600569365 /* BeaconInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED26BC91DDDC79600569365 /* BeaconInfo.m */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,8 @@
 		2E7DE8091DDEA7C60090917E /* MimamoriBeacon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MimamoriBeacon.m; sourceTree = "<group>"; };
 		2E7DE8501DDED4EF0090917E /* LocalNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalNotification.h; sourceTree = "<group>"; };
 		2E7DE8511DDED4EF0090917E /* LocalNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
+		2EB7C7091DE2C2FE00998EEB /* Alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Alert.h; sourceTree = "<group>"; };
+		2EB7C70A1DE2C2FE00998EEB /* Alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Alert.m; sourceTree = "<group>"; };
 		2ED26BC81DDDC79600569365 /* BeaconInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconInfo.h; sourceTree = "<group>"; };
 		2ED26BC91DDDC79600569365 /* BeaconInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconInfo.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -184,6 +187,8 @@
 			children = (
 				2E7DE8501DDED4EF0090917E /* LocalNotification.h */,
 				2E7DE8511DDED4EF0090917E /* LocalNotification.m */,
+				2EB7C7091DE2C2FE00998EEB /* Alert.h */,
+				2EB7C70A1DE2C2FE00998EEB /* Alert.m */,
 			);
 			path = libs;
 			sourceTree = "<group>";
@@ -329,6 +334,7 @@
 			files = (
 				2E7DE8521DDED4EF0090917E /* LocalNotification.m in Sources */,
 				2ED26BCA1DDDC79600569365 /* BeaconInfo.m in Sources */,
+				2EB7C70B1DE2C2FE00998EEB /* Alert.m in Sources */,
 				2E7DE80A1DDEA7C60090917E /* MimamoriBeacon.m in Sources */,
 				2E7AF8171DDD7E79003167FD /* SecondViewController.m in Sources */,
 				2E7AF8111DDD7E79003167FD /* AppDelegate.m in Sources */,

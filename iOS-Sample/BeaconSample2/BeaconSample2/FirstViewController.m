@@ -33,6 +33,7 @@
     }
     [self.BeaconOnBtn setAlpha:1.0f];
     [self.BeaconOffBtn setAlpha:0.5f];
+    
 }
 
 
@@ -40,7 +41,17 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+- (void)viewDidAppear:(BOOL)animated
+{
+    NSLog(@"viewDidAppear");
+    self.PeripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self
+                                                                     queue:nil];
 
+}
+- (void)viewDidDisappear:(BOOL)animated
+{
+    NSLog(@"viewDidDisappear");
+}
 - (IBAction)setBtnBeaconOn:(id)sender
 {
     NSLog(@"beacon ON");
@@ -112,5 +123,43 @@
 {
     NSLog(@"limit off");
     _isSendMsg = NO;
+}
+- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
+{
+    switch (peripheral.state) {
+        case CBPeripheralManagerStateUnknown:
+            NSLog(@"初期値");
+            break;
+        case CBPeripheralManagerStateResetting:
+            NSLog(@"システムとの接続が一時的に切れた");
+            break;
+        case CBPeripheralManagerStateUnsupported:
+            NSLog(@"BLE のサーバに機能がない");
+            break;
+        case CBPeripheralManagerStateUnauthorized:
+            NSLog(@"BLE のサーバになる権限がない");
+            break;
+        case CBPeripheralManagerStatePoweredOff:
+            NSLog(@"BLE が OFF になっている");
+            break;
+        case CBPeripheralManagerStatePoweredOn:
+            NSLog(@"BLE が ON になっている");
+            break;
+        default:
+            break;
+    }
+}
+- (void)showAlert
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"BlueTooth"
+                                                    message:@"BlueToothがONになっています。みまもり参加するにはONにしてください。"
+                                                   delegate:self
+                                          cancelButtonTitle:@"変更しない"
+                                          otherButtonTitles:@"変更する", nil];
+    [alert show];
+}
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"----[%d]", buttonIndex);
 }
 @end
