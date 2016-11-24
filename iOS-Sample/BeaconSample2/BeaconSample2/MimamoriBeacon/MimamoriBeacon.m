@@ -7,6 +7,7 @@
 //
 
 #import "MimamoriBeacon.h"
+#import <AudioToolbox/AudioServices.h>
 
 NSString *const RUNNING_STATE = @"running";
 
@@ -85,10 +86,10 @@ NSString *const RUNNING_STATE = @"running";
 {
     NSLog(@"Beacon OFF");
     for (CLBeaconRegion *region in [self.LocationManager monitoredRegions]) {
+        [self.LocationManager stopMonitoringForRegion:region];
         NSLog(@"--region=%@", region);
     }
 //    NSLog(@"regions:[%@]", regions);
-    
     [self.LocationManager stopMonitoringForRegion:self.Region];
     self.LocationManager.delegate = nil;
     [self stateOFF];
@@ -122,8 +123,10 @@ NSString *const RUNNING_STATE = @"running";
 {
     NSLog(@"Enter Region");
     if ([region isMemberOfClass:[CLBeaconRegion class]] && [CLLocationManager isRangingAvailable]) {
+        AudioServicesPlaySystemSound(1000);
         // 位置情報取得
-        [self.LocationManager startUpdatingLocation];
+        [self.LocationManager requestLocation];
+        //[self.LocationManager startUpdatingLocation];
         // レンジング(Beacon の情報取得)
         [self.LocationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
     }
@@ -136,7 +139,7 @@ NSString *const RUNNING_STATE = @"running";
     if ([region isMemberOfClass:[CLBeaconRegion class]] && [CLLocationManager isRangingAvailable]) {
         [self.LocationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
         // 位置情報取得 終了
-        [self.LocationManager stopUpdatingLocation];
+        //[self.LocationManager stopUpdatingLocation];
         // 緯度
         _latitude = -1;
         // 経度
@@ -222,5 +225,10 @@ NSString *const RUNNING_STATE = @"running";
 {
     NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
     return [pref boolForKey:RUNNING_STATE];
+}
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error
+{
+    NSLog(@"------error");
 }
 @end
