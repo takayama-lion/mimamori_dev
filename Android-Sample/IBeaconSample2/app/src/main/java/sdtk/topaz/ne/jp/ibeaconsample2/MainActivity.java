@@ -2,12 +2,17 @@ package sdtk.topaz.ne.jp.ibeaconsample2;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mStatusView;
 
+    private TextView mLogText;
+
+    private BroadcastReceiver receiver;
+
+    private Handler mHandler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         mStatusView = (TextView) findViewById(R.id.status);
         mUUIDText = (EditText) findViewById(R.id.uuid);
         mMajorText = (EditText) findViewById(R.id.major);
+        mLogText = (TextView) findViewById(R.id.log);
 
         ActivityCompat.requestPermissions(this,
                 new String[]{ Manifest.permission.ACCESS_FINE_LOCATION },
@@ -58,18 +70,42 @@ public class MainActivity extends AppCompatActivity {
             mMajorText.setText(major);
         }
         setText();
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("action1")) {
+                    final String message = intent.getStringExtra("message");
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mLogText.setText(message);
+                        }
+                    });
+                }
+            }
+        };
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("action1");
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, filter);
     }
 
-    public void onStart(View view) {
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
+    }
+
+    public void onBeaconStart(View view) {
         Log.d(TAG, "--onStart");
 
         if (isService()) {
-            onStop(view);
+            onBeaconStop(view);
         }
         Intent intent = new Intent(this, iBeaconService.class);
         intent.setAction(iBeaconService.PARAM_ID);
@@ -99,12 +135,17 @@ public class MainActivity extends AppCompatActivity {
         setText();
     }
 
-    public void onStop(View view) {
+    public void onBeaconStop(View view) {
         Log.d(TAG, "--onStop");
         if (isService()) {
             stopService(new Intent(this, iBeaconService.class));
         }
         setText();
+    }
+
+    public void onReset(View view) {
+        Log.d(TAG, "--onReset");
+        mLogText.setText("");
     }
     
     private boolean isService() {

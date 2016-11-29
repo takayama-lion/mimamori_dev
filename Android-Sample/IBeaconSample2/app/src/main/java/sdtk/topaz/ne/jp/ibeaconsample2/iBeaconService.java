@@ -3,8 +3,10 @@ package sdtk.topaz.ne.jp.ibeaconsample2;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -17,6 +19,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -52,6 +55,7 @@ public class iBeaconService extends Service implements BeaconConsumer, MonitorNo
     private double Longtitude = 0;
 
     public iBeaconService() {
+        Log.d(TAG, "---instance---");
     }
 
     @Override
@@ -85,6 +89,7 @@ public class iBeaconService extends Service implements BeaconConsumer, MonitorNo
         }
         mRegion = new Region("10000000-EE6E-2001-B000-005511DDAEGD", uuid, major, minor);
 
+        Log.i(TAG, "---set UUID:[" + uuid + "] major:[" + major + "]");
         create();
 
         return START_STICKY;
@@ -95,8 +100,10 @@ public class iBeaconService extends Service implements BeaconConsumer, MonitorNo
         super.onDestroy();
         Log.d(TAG, "--onDestroy");
 
-        mBeaconManager.removeMonitoreNotifier(this);
-        mBeaconManager.unbind(this);
+        if (mBeaconManager != null) {
+            mBeaconManager.removeMonitoreNotifier(this);
+            mBeaconManager.unbind(this);
+        }
     }
 
     @Override
@@ -116,9 +123,6 @@ public class iBeaconService extends Service implements BeaconConsumer, MonitorNo
      * create
      */
     private void create() {
-        if (mBeaconManager != null) {
-            return;
-        }
         // インスタンス化
         mBeaconManager = BeaconManager.getInstanceForApplication(this);
         mBeaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(IBEACON_FORMAT));
@@ -131,7 +135,7 @@ public class iBeaconService extends Service implements BeaconConsumer, MonitorNo
     @Override
     public void didEnterRegion(Region region) {
         setLocation();
-        Log.i("TAG,", "enter------[" + region.getId1() + "][" + region.getId2() + "][" + region.getId2() + "]");
+//        Log.i("TAG,", "enter------[" + region.getId1() + "][" + region.getId2() + "][" + region.getId3() + "]");
         mBeaconManager.addRangeNotifier(this);
         try {
             mBeaconManager.startRangingBeaconsInRegion(region);
@@ -143,7 +147,7 @@ public class iBeaconService extends Service implements BeaconConsumer, MonitorNo
 
     @Override
     public void didExitRegion(Region region) {
-        Log.i("TAG,", "exit------[" + region.getId1() + "][" + region.getId2() + "][" + region.getId2() + "]");
+//        Log.i("TAG,", "exit------[" + region.getId1() + "][" + region.getId2() + "][" + region.getId3() + "]");
         try {
             mBeaconManager.stopRangingBeaconsInRegion(region);
         } catch (RemoteException e) {
@@ -160,16 +164,16 @@ public class iBeaconService extends Service implements BeaconConsumer, MonitorNo
 
     @Override
     public void didDetermineStateForRegion(int i, Region region) {
-        Log.i("TAG,", "determine------[" + i + "][" + region.getId1() + "][" + region.getId2() + "][" + region.getId2() + "]");
-
+//        Log.i("TAG,", "determine------[" + i + "][" + region.getId1() + "][" + region.getId2() + "][" + region.getId3() + "]");
     }
 
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> collection, Region region) {
         for (Beacon beacon : collection) {
-            String message = "UUID:[" + beacon.getId1() + "] major:[" + beacon.getId2() + "] minor:[" + beacon.getId2() + "] latitude:[" + Latitude + "] longitude:[" + Longtitude + "]";
+            String message = "UUID:[" + beacon.getId1() + "]\n major:[" + beacon.getId2() + "]\n minor:[" + beacon.getId3() + "]\n latitude:[" + Latitude + "]\n longitude:[" + Longtitude + "]";
             setToast(message);
-            Log.i("TAG,", "beacon------UUID:[" + beacon.getId1() + "] major:[" + beacon.getId2() + "] minor:[" + beacon.getId2() + "] latitude:[" + Latitude + "] longitude:[" + Longtitude + "]");
+            sendSyncBroadcast(message);
+            Log.i("TAG,", "beacon------UUID:[" + beacon.getId1() + "] major:[" + beacon.getId2() + "] minor:[" + beacon.getId3() + "] latitude:[" + Latitude + "] longitude:[" + Longtitude + "]");
         }
     }
 
@@ -220,5 +224,26 @@ public class iBeaconService extends Service implements BeaconConsumer, MonitorNo
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void sendSyncBroadcast(String message) {
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("action2");
+        Intent i = new Intent();
+        i.setAction("action1");
+        i.putExtra("message", message);
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, filter);
+        Log.d("", "Start Activity");
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcastSync(i);
+        Log.d("", "End Activity");
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
+
     }
 }

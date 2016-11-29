@@ -45,18 +45,29 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:text="onStart"
-            android:onClick="onStart"
+            android:text="Beacon Start"
+            android:onClick="onBeaconStart"
             android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <Button
-            android:text="onStop"
-            android:onClick="onStop"
+            android:text="Beacon Stop"
+            android:onClick="onBeaconStop"
             android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/log"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <Button
+        android:text="Log Rest"
+        android:onClick="onReset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
