@@ -201,6 +201,10 @@
     NSString *msg = [pref stringForKey:LOG];
     NSString *msg2 = nil;
     if ([msg length]) {
+        if ([msg length] > 10000) {
+            NSLog(@"--log clean");
+            msg = @"";
+        }
         msg2 = [NSString stringWithFormat:@"%@\n%@\n", msg, message];
     } else {
         msg2 = [NSString stringWithFormat:@"%@\n", message];

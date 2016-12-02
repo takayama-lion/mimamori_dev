@@ -149,7 +149,7 @@ NSString *const RUNNING_STATE = @"running";
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
     NSLog(@"Enter Region"); 
-    [_delegate searchBeaconInfo:[NSString stringWithFormat:@"***** beacon in *****\n%@", region] title:@"Beacon IN"];
+    [_delegate searchBeaconInfo:[NSString stringWithFormat:@"***** beacon in *****\n%@\n%@", region, [NSDate date]] title:@"Beacon IN"];
 
     if ([region isMemberOfClass:[CLBeaconRegion class]] && [CLLocationManager isRangingAvailable]) {
         AudioServicesPlaySystemSound(10000);
@@ -165,7 +165,7 @@ NSString *const RUNNING_STATE = @"running";
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
     NSLog(@"Exit Region");
-    [_delegate searchBeaconInfo:[NSString stringWithFormat:@"***** beacon out *****\n%@", region] title:@"Beacon OUT"];
+    [_delegate searchBeaconInfo:[NSString stringWithFormat:@"***** beacon out *****\n%@\n%@", region, [NSDate date]] title:@"Beacon OUT"];
     if ([region isMemberOfClass:[CLBeaconRegion class]] && [CLLocationManager isRangingAvailable]) {
         _isRange = false;
         // レンジング(Beacon の情報取得)
@@ -222,7 +222,7 @@ NSString *const RUNNING_STATE = @"running";
                 info.Minor = minor;
                 info.Latitude = &(_latitude);
                 info.Longitude = &(_longitude);
-                message = [NSString stringWithFormat:@"%@\n\n UUID=%@\n Major=%@\n Minor=%@\n Latitude=%f\n Longitude=%f", message, info.UUID, info.Major, info.Minor, *info.Latitude, *info.Longitude];
+                message = [NSString stringWithFormat:@"%@\n\n UUID=%@\n Major=%@\n Minor=%@\n Latitude=%f\n Longitude=%f\n%@", message, info.UUID, info.Major, info.Minor, *info.Latitude, *info.Longitude, [NSDate date]];
                 [_BeaconList addObject:info];
                 isflg = true;
             }
@@ -236,7 +236,7 @@ NSString *const RUNNING_STATE = @"running";
                     info.Minor = minor;
                     info.Latitude = &(_latitude);
                     info.Longitude = &(_longitude);
-                    message = [NSString stringWithFormat:@"%@\n\n UUID=%@\n Major=%@\n Minor=%@\n Latitude=%f\n Longitude=%f", message, info.UUID, info.Major, info.Minor, *info.Latitude, *info.Longitude];
+                    message = [NSString stringWithFormat:@"%@\n\n UUID=%@\n Major=%@\n Minor=%@\n Latitude=%f\n Longitude=%f\n%@", message, info.UUID, info.Major, info.Minor, *info.Latitude, *info.Longitude, [NSDate date]];
                     isflg = true;
                 }
             }
@@ -247,9 +247,10 @@ NSString *const RUNNING_STATE = @"running";
         [_delegate isBeacon:YES];
         [_delegate searchBeaconInfo:message title:@"detail"];
         
-        // 三秒間ほど連続で同じ通知が出ないようにする
+        // 10秒間ほど連続で同じ通知が出ないようにする
         if (_timer == nil) {
-            _timer = [NSTimer scheduledTimerWithTimeInterval:5
+            NSLog(@"--timer on");
+            _timer = [NSTimer scheduledTimerWithTimeInterval:15
                                                       target:self
                                                     selector:@selector(time:)
                                                     userInfo:nil
@@ -266,6 +267,7 @@ NSString *const RUNNING_STATE = @"running";
 }
 - (void)time:(NSTimer*)timer
 {
+    NSLog(@"--timer off");
     [_BeaconList removeAllObjects];
     if ([_timer isValid]) {
         [_timer invalidate];
