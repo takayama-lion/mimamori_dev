@@ -11,24 +11,23 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface FirstViewController : UIViewController<BeaconDelegate,CBPeripheralManagerDelegate,UIAlertViewDelegate,UIActionSheetDelegate> {
+@interface FirstViewController : UIViewController<BeaconDelegate, CBPeripheralManagerDelegate,UIAlertViewDelegate,UIActionSheetDelegate> {
     BOOL _isSendMsg;
-    MimamoriBeacon *_Beacon[2];
 }
 
-@property (strong, nonatomic) IBOutlet UITextField *UUIDField1;
-@property (strong, nonatomic) IBOutlet UITextField *MajorField1;
-@property (strong, nonatomic) IBOutlet UITextField *MinorField1;
-@property (strong, nonatomic) IBOutlet UITextField *UUIDField2;
-@property (strong, nonatomic) IBOutlet UITextField *MajorField2;
-@property (strong, nonatomic) IBOutlet UITextField *MinorField2;
+@property (strong, nonatomic) MimamoriBeacon *Beacon;
+@property (strong, nonatomic) IBOutlet UITextField *UUIDField;
+@property (strong, nonatomic) IBOutlet UITextField *MajorField;
 @property (strong, nonatomic) IBOutlet UIButton *BeaconOnBtn;
 @property (strong, nonatomic) IBOutlet UIButton *BeaconOffBtn;
+@property (strong, nonatomic) IBOutlet UILabel *LogLabel;
+@property (strong, nonatomic) IBOutlet UIButton *LogResetBtn;
 
 @property (strong, nonatomic) CBPeripheralManager *PeripheralManager;
 
 - (IBAction)setBtnBeaconOn:(id)sender;
 - (IBAction)setBtnBeaconOff:(id)sender;
+- (IBAction)setLogReset:(id)sender;
 
 @end
 

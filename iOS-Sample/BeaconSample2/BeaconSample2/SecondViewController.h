@@ -10,6 +10,11 @@
 
 @interface SecondViewController : UIViewController
 
+@property (nonatomic, strong) IBOutlet UIScrollView *ScrollView;
+@property (nonatomic, strong) IBOutlet UILabel *LogLabel;
+@property (nonatomic, strong) IBOutlet UIButton *LogResetButton;
 
+- (IBAction)onLogDisplay:(id)sender;
+- (IBAction)onLogResetButton:(id)sender;
 @end
 

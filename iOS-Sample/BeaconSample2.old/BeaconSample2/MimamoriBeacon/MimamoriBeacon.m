@@ -20,35 +20,8 @@ NSString *const RUNNING_STATE = @"running";
 {
     if (self = [super init]) {
         self.Identifier = identifier;
-        _isRange = false;
-        _BeaconList = [NSMutableArray array];
     }
     return self;
-}
-/**
- * set uuid, major, minor
- */
-- (void)setUUID:(NSString *)uuid major:(NSString *)major minor:(NSString *)minor
-{
-    if ([major length]) {
-        if ([minor length]) {
-            self.Region = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:uuid]
-                                                                  major:(uint16_t)[major integerValue]
-                                                                  minor:(uint16_t)[minor integerValue]
-                                                             identifier:self.Identifier];
-            self.Region.notifyOnEntry = YES;
-            self.Region.notifyOnExit = YES;
-            self.Region.notifyEntryStateOnDisplay = NO;
-            
-        } else {
-            [self setUUID:uuid major:minor];
-            
-        }
-    } else {
-        [self setUUID:uuid];
-        
-    }
-
 }
 /**
  * set uuid, major
@@ -148,14 +121,12 @@ NSString *const RUNNING_STATE = @"running";
 // 指定した領域に入った場合
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    NSLog(@"Enter Region"); 
-    [_delegate searchBeaconInfo:[NSString stringWithFormat:@"***** beacon in *****\n%@", region] title:@"Beacon IN"];
-
+    NSLog(@"Enter Region");
     if ([region isMemberOfClass:[CLBeaconRegion class]] && [CLLocationManager isRangingAvailable]) {
-        AudioServicesPlaySystemSound(10000);
-        _isRange = true;
+        AudioServicesPlaySystemSound(1000);
         // 位置情報取得
         [self.LocationManager requestLocation];
+        //[self.LocationManager startUpdatingLocation];
         // レンジング(Beacon の情報取得)
         [self.LocationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
     }
@@ -165,14 +136,10 @@ NSString *const RUNNING_STATE = @"running";
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
     NSLog(@"Exit Region");
-    [_delegate searchBeaconInfo:[NSString stringWithFormat:@"***** beacon out *****\n%@", region] title:@"Beacon OUT"];
     if ([region isMemberOfClass:[CLBeaconRegion class]] && [CLLocationManager isRangingAvailable]) {
-        _isRange = false;
-        // レンジング(Beacon の情報取得)
-        [self.LocationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
-//        [self.LocationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
-        // 位置情報取得
-//        [self.LocationManager requestLocation];
+        [self.LocationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
+        // 位置情報取得 終了
+        //[self.LocationManager stopUpdatingLocation];
         // 緯度
         _latitude = -1;
         // 経度
@@ -204,73 +171,20 @@ NSString *const RUNNING_STATE = @"running";
 // Beacon信号を検出した場合
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
-    NSString *message = @"";
-    BOOL isflg = false;
-    for (NSInteger i=0; i<beacons.count; i++) {
-        CLBeacon *beacon = [beacons objectAtIndex:i];
+    if (beacons.count > 0) {
+        CLBeacon *beacon = beacons.firstObject;
         NSLog(@"UUID=%@ major=%@ minor=%@", beacon.proximityUUID, beacon.major, beacon.minor);
-        if ([self.delegate respondsToSelector:@selector(searchBeaconInfo:title:)])
+        if ([self.delegate respondsToSelector:@selector(searchBeaconInfo:)])
         {
-            NSString *uuid = [beacon.proximityUUID UUIDString];
-            NSString *major = [beacon.major stringValue];
-            NSString *minor = [beacon.minor stringValue];
-            
-            if (_BeaconList.count == 0) {
-                BeaconInfo *info = [[BeaconInfo alloc] init];
-                info.UUID = uuid;
-                info.Major = major;
-                info.Minor = minor;
-                info.Latitude = &(_latitude);
-                info.Longitude = &(_longitude);
-                message = [NSString stringWithFormat:@"%@\n\n UUID=%@\n Major=%@\n Minor=%@\n Latitude=%f\n Longitude=%f", message, info.UUID, info.Major, info.Minor, *info.Latitude, *info.Longitude];
-                [_BeaconList addObject:info];
-                isflg = true;
-            }
-            for (NSInteger i=0; i<_BeaconList.count; i++) {
-                BeaconInfo *inf = [_BeaconList objectAtIndex:i];
-                if (![inf.UUID isEqualToString:uuid] || ![inf.Major isEqualToString:major] || ![inf.Minor isEqualToString:minor]) {
-                    [_BeaconList addObject:inf];
-                    BeaconInfo *info = [[BeaconInfo alloc] init];
-                    info.UUID = uuid;
-                    info.Major = major;
-                    info.Minor = minor;
-                    info.Latitude = &(_latitude);
-                    info.Longitude = &(_longitude);
-                    message = [NSString stringWithFormat:@"%@\n\n UUID=%@\n Major=%@\n Minor=%@\n Latitude=%f\n Longitude=%f", message, info.UUID, info.Major, info.Minor, *info.Latitude, *info.Longitude];
-                    isflg = true;
-                }
-            }
-            
+            BeaconInfo *info = [[BeaconInfo alloc] init];
+            info.UUID = [beacon.proximityUUID UUIDString];
+            info.Major = [beacon.major stringValue];
+            info.Minor = [beacon.minor stringValue];
+            info.Latitude = &(_latitude);
+            info.Longitude = &(_longitude);
+            [_delegate searchBeaconInfo:info];
         }
     }
-    if (isflg) {
-        [_delegate isBeacon:YES];
-        [_delegate searchBeaconInfo:message title:@"detail"];
-        
-        // 三秒間ほど連続で同じ通知が出ないようにする
-        if (_timer == nil) {
-            _timer = [NSTimer scheduledTimerWithTimeInterval:5
-                                                      target:self
-                                                    selector:@selector(time:)
-                                                    userInfo:nil
-                                                     repeats:NO];
-        }
-    } else {
-        NSLog(@"---no region");
-        if (!_isRange) {
-            [self.LocationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
-            [_delegate isBeacon:NO];
-        }
-
-    }
-}
-- (void)time:(NSTimer*)timer
-{
-    [_BeaconList removeAllObjects];
-    if ([_timer isValid]) {
-        [_timer invalidate];
-    }
-    _timer = nil;
 }
 - (void)locationManager:(CLLocationManager *)manager
      didUpdateLocations:(NSArray *)locations

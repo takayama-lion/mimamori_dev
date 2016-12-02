@@ -8,6 +8,7 @@
 
 #import "FirstViewController.h"
 #import "LocalNotification.h"
+#import "Constants.h"
 
 @interface FirstViewController ()
 
@@ -18,24 +19,47 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.Beacon = [[MimamoriBeacon alloc] initIdentifier:@"BeaconSample2"];
-    self.Beacon.delegate = self;
+    _Beacon[0] = [[MimamoriBeacon alloc] initIdentifier:@"BeaconSample2_1"];
+    _Beacon[0].delegate = self;
+    _Beacon[1] = [[MimamoriBeacon alloc] initIdentifier:@"BeaconSample2_2"];
+    _Beacon[1].delegate = self;
     NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
-    NSString *uuid = [pref stringForKey:@"UUID"];
-    NSString *major = [pref stringForKey:@"Major"];
-    if ([uuid length]) {
-        [self.UUIDField setText:uuid];
-        if ([major length]) {
-            [self.MajorField setText:major];
+    NSString *uuid1 = [pref stringForKey:UUID1];
+    NSString *major1 = [pref stringForKey:MAJOR1];
+    NSString *minor1 = [pref stringForKey:MINOR1];
+    NSString *uuid2 = [pref stringForKey:UUID2];
+    NSString *major2 = [pref stringForKey:MAJOR2];
+    NSString *minor2 = [pref stringForKey:MINOR2];
+    if ([uuid1 length]) {
+        [self.UUIDField1 setText:uuid1];
+        if ([major1 length]) {
+            [self.MajorField1 setText:major1];
+            if ([minor1 length]) {
+                [self.MinorField1 setText:minor1];
+            }
         }
-    } else {
-        [self.UUIDField setText:@"53544152-4a50-4e40-8154-2631935eb10b"];
     }
+    if ([uuid2 length]) {
+        [self.UUIDField2 setText:uuid2];
+        if ([major2 length]) {
+            [self.MajorField2 setText:major2];
+            if ([minor2 length]) {
+                [self.MinorField2 setText:minor2];
+            }
+        }
+    }    
+    
     [self.BeaconOnBtn setAlpha:1.0f];
     [self.BeaconOffBtn setAlpha:0.5f];
     
+    // 背景をキリックしたら、キーボードを隠す
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeSoftKeyboard)];
+    [self.view addGestureRecognizer:gestureRecognizer];
 }
-
+// キーボードを隠す処理
+- (void)closeSoftKeyboard {
+    [self.view endEditing: YES];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -55,31 +79,42 @@
 - (IBAction)setBtnBeaconOn:(id)sender
 {
     NSLog(@"beacon ON");
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    [pref removeObjectForKey:LOG];
+
     _isSendMsg = NO;
-    NSString *uuid = nil;
-    NSString *major = nil;
-    if (self.UUIDField != nil && [self.UUIDField.text length]) {
-        uuid = self.UUIDField.text;
+    NSString *uuid1 = nil;
+    NSString *major1 = nil;
+    NSString *minor1 = nil;
+    NSString *uuid2 = nil;
+    NSString *major2 = nil;
+    NSString *minor2 = nil;
+    if (self.UUIDField1 != nil && [self.UUIDField1.text length]) {
+        uuid1 = self.UUIDField1.text;
     }
-    if (self.MajorField != nil && [self.MajorField.text length]) {
-        major = self.MajorField.text;
+    if (self.MajorField1 != nil && [self.MajorField1.text length]) {
+        major1 = self.MajorField1.text;
     }
-    if (uuid != nil) {
-        if (major != nil) {
-            [self.Beacon setUUID:uuid major:major];
-            NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
-            [pref setValue:uuid forKey:@"UUID"];
-            [pref setValue:major forKey:@"Major"];
-            [pref synchronize];
-        } else {
-            [self.Beacon setUUID:uuid];
-            NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
-            [pref setValue:uuid forKey:@"UUID"];
-            [pref removeObjectForKey:@"Major"];
-            [pref synchronize];
-        }
+    if (self.MinorField1 != nil && [self.MinorField1.text length]) {
+        minor1 = self.MinorField1.text;
     }
-    [self.Beacon on];
+    if (self.UUIDField2 != nil && [self.UUIDField2.text length]) {
+        uuid2 = self.UUIDField2.text;
+    }
+    if (self.MajorField2 != nil && [self.MajorField2.text length]) {
+        major2 = self.MajorField2.text;
+    }
+    if (self.MinorField2 != nil && [self.MinorField2.text length]) {
+        minor2 = self.MinorField2.text;
+    }
+    // 値設定
+    if ([self setBeaconNumber:0 UUID:uuid1 major:major1 minor:minor1]) {
+        [_Beacon[0] on];
+    }
+    if ([self setBeaconNumber:1 UUID:uuid2 major:major2 minor:minor2]) {
+        [_Beacon[1] on];
+    }
+
     [self.BeaconOnBtn setAlpha:0.5f];
     [self.BeaconOffBtn setAlpha:1.0f];
     [self.view endEditing:YES];
@@ -89,35 +124,118 @@
 {
     NSLog(@"beacon OFF");
     NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
-    NSString *uuid = [pref stringForKey:@"UUID"];
-    NSString *major = [pref stringForKey:@"Major"];
-    [self.Beacon setUUID:uuid major:major];
-    [self.Beacon off];
+    NSString *uuid1 = [pref stringForKey:UUID1];
+    NSString *major1 = [pref stringForKey:MAJOR1];
+    NSString *minor1 = [pref stringForKey:MINOR1];
+    NSString *uuid2 = [pref stringForKey:UUID2];
+    NSString *major2 = [pref stringForKey:MAJOR2];
+    NSString *minor2 = [pref stringForKey:MINOR2];
+
+    // 値設定
+    if ([self setBeaconNumber:0 UUID:uuid1 major:major1 minor:minor1]) {
+        [_Beacon[0] off];
+    }
+    if ([self setBeaconNumber:1 UUID:uuid2 major:major2 minor:minor2]) {
+        [_Beacon[1] off];
+    }
     [self.BeaconOnBtn setAlpha:1.0f];
     [self.BeaconOffBtn setAlpha:0.5f];
 }
-- (IBAction)setLogReset:(id)sender
+/**
+ * set beacon
+ */
+- (BOOL)setBeaconNumber:(int)num UUID:(NSString *)uuid major:(NSString *)major minor:(NSString *)minor
 {
-    NSLog(@"log rest");
-    if (self.LogLabel != nil) {
-        [self.LogLabel setText:@""];
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    NSString *UUID;
+    NSString *MAJOR;
+    NSString *MINOR;
+    if (num == 1) {
+        UUID = UUID2;
+        MAJOR = MAJOR2;
+        MINOR = MINOR2;
+    } else {
+        UUID = UUID1;
+        MAJOR = MAJOR1;
+        MINOR = MINOR1;
     }
+    if ([uuid length]) {
+        if ([major length]) {
+            if ([minor length]) {
+                [pref setValue:uuid forKey:UUID];
+                [pref setValue:major forKey:MAJOR];
+                [pref setValue:minor forKey:MINOR];
+                [_Beacon[num] setUUID:uuid major:major minor:minor];
+                
+            } else {
+                [pref setValue:uuid forKey:UUID];
+                [pref setValue:major forKey:MAJOR];
+                [pref removeObjectForKey:MINOR];
+                [_Beacon[num] setUUID:uuid major:major];
+                
+            }
+        } else {
+            [pref setValue:uuid forKey:UUID];
+            [pref removeObjectForKey:MAJOR];
+            [pref removeObjectForKey:MINOR];
+            [_Beacon[num] setUUID:uuid];
+            
+        }
+        [pref synchronize];
+        return YES;
+    } else {
+        [pref removeObjectForKey:UUID];
+        [pref removeObjectForKey:MAJOR];
+        [pref removeObjectForKey:MINOR];
+        [pref synchronize];
+        return NO;
+    }
+
 }
 /**
  * serach beacon
  */
-- (void)searchBeaconInfo:(BeaconInfo *)beaconInfo
+- (void)searchBeaconInfo:(NSString *)message title:(NSString *)title
 {
-    NSString *log = [NSString stringWithFormat:@"UUID=%@\n Major=%@\n Minor=%@\n Latitude=%f\n Longitude=%f", beaconInfo.UUID, beaconInfo.Major, beaconInfo.Minor, *beaconInfo.Latitude, *beaconInfo.Longitude];
-    if (!_isSendMsg) {
-        _isSendMsg = YES;
-        [LocalNotification sendLocalMessage:log];
-        [NSTimer scheduledTimerWithTimeInterval:5
-                                         target:self selector:@selector(limitOff:)
-                                       userInfo:nil
-                                        repeats:NO];
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    NSString *msg = [pref stringForKey:LOG];
+    NSString *msg2 = nil;
+    if ([msg length]) {
+        msg2 = [NSString stringWithFormat:@"%@\n%@\n", msg, message];
+    } else {
+        msg2 = [NSString stringWithFormat:@"%@\n", message];
     }
-    [self.LogLabel setText:log];
+    [pref setValue:msg2 forKey:LOG];
+    [pref synchronize];
+    
+    // 画面通知
+    [LocalNotification sendLocalMessage:message];
+    
+    UIAlertController *alertController =
+    [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    
+    [self presentViewController:alertController animated:YES completion:^{
+        double delayInSeconds = 3.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.8
+                             animations:^{
+                                 alertController.view.alpha  = 0.0;
+                             } completion:^(BOOL finished){
+                                 [alertController dismissViewControllerAnimated:NO completion:nil];
+                             }];
+        });
+    }];
+
+    
+    NSLog(@"beacon:%@", message);
+}
+/**
+ * is beacon
+ */
+- (void)isBeacon:(BOOL)status
+{
+    
 }
 - (void)limitOff:(NSTimer *)timer
 {
@@ -160,6 +278,6 @@
 }
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    NSLog(@"----[%d]", buttonIndex);
+    NSLog(@"----[%ld]", (long)buttonIndex);
 }
 @end

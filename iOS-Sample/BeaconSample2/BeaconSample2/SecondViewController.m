@@ -7,6 +7,7 @@
 //
 
 #import "SecondViewController.h"
+#import "Constants.h"
 
 @interface SecondViewController ()
 
@@ -16,7 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+
 }
 
 
@@ -25,5 +26,20 @@
     // Dispose of any resources that can be recreated.
 }
 
-
+- (IBAction)onLogDisplay:(id)sender
+{
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    NSString *msg = [pref stringForKey:LOG];
+    [self.LogLabel setText:msg];
+    [self.LogLabel sizeToFit];
+    
+    self.ScrollView.contentSize = CGSizeMake(self.LogLabel.frame.size.width, self.LogLabel.frame.size.height);
+}
+- (IBAction)onLogResetButton:(id)sender
+{
+    NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+    [pref removeObjectForKey:LOG];
+    [pref synchronize];
+    [self.LogLabel setText:@""];
+}
 @end

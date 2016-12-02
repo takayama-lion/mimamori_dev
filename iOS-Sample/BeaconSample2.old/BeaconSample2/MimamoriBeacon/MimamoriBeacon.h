@@ -18,15 +18,7 @@
 /**
  * serach beacon
  */
-//- (void)searchBeaconInfo:(BeaconInfo *)beaconInfo;
-/**
- * serach beacon
- */
-- (void)searchBeaconInfo:(NSString *)message title:(NSString *)title;
-/**
- * is beacon
- */
-- (void)isBeacon:(BOOL)status;
+- (void)searchBeaconInfo:(BeaconInfo *)beaconInfo;
 
 @end
 
@@ -36,14 +28,6 @@
     double _latitude;
     // 経度
     double _longitude;
-    // range flug
-    BOOL _isRange;
-    // beacon
-    NSString *_beacon;
-    //
-    NSMutableArray *_BeaconList;
-    //
-    NSTimer *_timer;
 }
 
 @property (nonatomic, assign) id<BeaconDelegate> delegate;
@@ -56,10 +40,6 @@
  * init
  */
 - (id)initIdentifier:(NSString *)identifier;
-/**
- * set uuid, major, minor
- */
-- (void)setUUID:(NSString *)uuid major:(NSString *)major minor:(NSString *)minor;
 /**
  * set uuid, major
  */
