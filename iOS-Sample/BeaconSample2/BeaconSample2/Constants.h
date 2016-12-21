@@ -10,9 +10,8 @@
 
 #define UUID1 @"UUID1"
 #define MAJOR1 @"MAJOR1"
-#define MINOR1 @"MINOR1"
-#define UUID2 @"UUID2"
 #define MAJOR2 @"MAJOR2"
-#define MINOR2 @"MINOR2"
+#define MAJOR3 @"MAJOR3"
+#define MAJOR4 @"MAJOR4"
 
 #define LOG @"LOG"

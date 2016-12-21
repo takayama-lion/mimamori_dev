@@ -7,21 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MimamoriBeacon.h"
+#import "MimamoriIBeacon.h"
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface FirstViewController : UIViewController<BeaconDelegate,CBPeripheralManagerDelegate,UIAlertViewDelegate,UIActionSheetDelegate> {
+@interface FirstViewController : UIViewController<MimamoriIBeaconDelegate,CBPeripheralManagerDelegate,UIAlertViewDelegate,UIActionSheetDelegate> {
     BOOL _isSendMsg;
-    MimamoriBeacon *_Beacon[2];
+//    MimamoriBeacon *_Beacon[2];
+    MimamoriIBeacon *_IBeacon;
 }
 
 @property (strong, nonatomic) IBOutlet UITextField *UUIDField1;
 @property (strong, nonatomic) IBOutlet UITextField *MajorField1;
-@property (strong, nonatomic) IBOutlet UITextField *MinorField1;
-@property (strong, nonatomic) IBOutlet UITextField *UUIDField2;
 @property (strong, nonatomic) IBOutlet UITextField *MajorField2;
-@property (strong, nonatomic) IBOutlet UITextField *MinorField2;
+@property (strong, nonatomic) IBOutlet UITextField *MajorField3;
+@property (strong, nonatomic) IBOutlet UITextField *MajorField4;
 @property (strong, nonatomic) IBOutlet UIButton *BeaconOnBtn;
 @property (strong, nonatomic) IBOutlet UIButton *BeaconOffBtn;
 
