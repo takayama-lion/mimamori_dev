@@ -243,6 +243,21 @@
     // 画面通知
     [LocalNotification sendLocalMessage:message];
     
+    // インスタンス生成
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    // 5分後に通知をする（設定は秒単位）
+    notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(1)];
+    // タイムゾーンの設定
+    notification.timeZone = [NSTimeZone defaultTimeZone];
+    // 通知時に表示させるメッセージ内容
+    notification.alertBody = message;
+    // 通知に鳴る音の設定
+    notification.soundName = UILocalNotificationDefaultSoundName;
+    
+    // 通知の登録
+    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+
+    
     UIAlertController *alertController =
     [UIAlertController alertControllerWithTitle:@"beacon info" message:message preferredStyle:UIAlertControllerStyleAlert];
     

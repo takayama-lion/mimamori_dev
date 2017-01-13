@@ -28,6 +28,7 @@
     NSMutableDictionary *_regionList;
     NSTimer *_timer;
     BOOL _isTimer;
+    NSMutableArray *_locationArray;
 }
 
 @property (nonatomic, assign) id<MimamoriIBeaconDelegate> delegate;

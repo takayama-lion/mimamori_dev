@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,8 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
-
-import sdtk.topaz.ne.jp.ibeaconsample2.MimamoriIBeacon.IBeaconProcess;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getCanonicalName();
@@ -40,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver receiver;
 
     private Handler mHandler = new Handler();
-
-    private IBeaconProcess mIBeaconProcess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +60,31 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        mIBeaconProcess = new IBeaconProcess(getApplicationContext(), "11111", "d4c3ccc0-29fb-11e5-884f-0002a5d5c51b");
+        SharedPreferences prf = getSharedPreferences(iBeaconService.PARAM_ID, MODE_PRIVATE);
+        String uuid = prf.getString(iBeaconService.PARAM_UUID, null);
+        String major = prf.getString(iBeaconService.PARAM_MAJOR, null);
+        if (uuid != null) {
+            mUUIDText.setText(uuid);
+        }
+        if (major != null) {
+            mMajorText.setText(major);
+        }
+        setText();
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("action1")) {
+                    final String message = intent.getStringExtra("message");
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mLogText.setText(message);
+                        }
+                    });
+                }
+            }
+        };
     }
 
     @Override
@@ -71,16 +92,18 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         IntentFilter filter = new IntentFilter();
         filter.addAction("action1");
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, filter);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
     }
 
     public void onBeaconStart(View view) {
         Log.d(TAG, "--onStart");
-/*
+
         if (isService()) {
             onBeaconStop(view);
         }
@@ -110,18 +133,14 @@ public class MainActivity extends AppCompatActivity {
 
         startService(intent);
         setText();
-        */
-        mIBeaconProcess.start("1111");
     }
 
     public void onBeaconStop(View view) {
         Log.d(TAG, "--onStop");
-        mIBeaconProcess.stop("1111");
-/*        if (isService()) {
+        if (isService()) {
             stopService(new Intent(this, iBeaconService.class));
         }
         setText();
-        */
     }
 
     public void onReset(View view) {
